@@ -12,12 +12,16 @@ if collection_name not in db.list_collection_names():
 
 collection = db[collection_name]
 
-def save_image_embedding(image_path):
+def save_image_embedding(image_path, embedding=None):
+    if embedding is None:
+        embedding = get_image_embedding(image_path)
+    
     image_doc = {
         "image_path": str(image_path),
-        "clip_embedding": get_image_embedding(image_path),
+        "clip_embedding": embedding,
         "embedding_model": "clip-vit-base-patch32",
         "created_at": datetime.datetime.utcnow()
     }
     result = collection.insert_one(image_doc)
     return result.inserted_id
+
